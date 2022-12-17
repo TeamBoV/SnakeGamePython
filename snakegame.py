@@ -2,8 +2,12 @@ import pygame
 import random
 import sys
 
-# Initialize pygame
+# Initialize pygame and the mixer module
 pygame.init()
+pygame.mixer.init()
+
+# Load the sound effect file
+point_sound = pygame.mixer.Sound("sounds/collect.wav")
 
 # Set the window size
 window_size = (400, 400)
@@ -88,6 +92,8 @@ while not game_over:
     if snake_pos[0] == food_pos[0] and snake_pos[1] == food_pos[1]:
         score += 1
         food_spawn = False
+        # Play the sound effect
+        point_sound.play()
     else:
         snake_body.pop()
 
@@ -108,44 +114,27 @@ while not game_over:
     # Fill the screen with the background color
     screen.fill(bg_color)
 
-    # Draw the snake
+    # Draw the snake and the food
     for pos in snake_body:
         pygame.draw.rect(screen, (0, 255, 0), pygame.Rect(pos[0], pos[1], 10, 10))
-
-    # Draw the food
     pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(food_pos[0], food_pos[1], 10, 10))
+
+    # Display the score
+    score_text = font.render("Score: {}".format(score), True, (255, 255, 255))
+    screen.blit(score_text, (5, 5))
 
     # Update the display
     pygame.display.update()
 
-    # Set the frame rate to 10 FPS
+    # Set the frame rate
     clock.tick(10)
 
 # Display the game over screen
-
-# Set the font and font size
-font = pygame.font.Font('freesansbold.ttf', 32)
-
-# Set the font color to white
-font_color = (255, 255, 255)
-
-# Render the "Game Over" text message
-game_over_text = font.render("Game Over", True, font_color)
-
-# Get the dimensions of the text message
-text_rect = game_over_text.get_rect()
-
-# Set the position of the text message
-text_x = screen.get_width() / 2 - text_rect.width / 2
-text_y = screen.get_height() / 2 - text_rect.height / 2
-
-# Draw the text message on the screen
-screen.blit(game_over_text, [text_x, text_y])
-
-# Update the display
+game_over_text = font.render("Game Over!", True, (255, 255, 255))
+screen.blit(game_over_text, (window_size[0] // 2 - game_over_text.get_width() // 2, window_size[1] // 2 - game_over_text.get_height() // 2))
 pygame.display.update()
 
-# Wait for the user to close the game window
+# Wait for the user to close the window
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
